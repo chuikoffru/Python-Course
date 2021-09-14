@@ -26,15 +26,16 @@ def parse_job(html):
   company = html.find("h3")
 
   return {
-    'title': title.text,
     'link': title['href'],
+    'title': title.text,
     'company': company.find('span').text.strip(),
-    'location': company.find("span", {"class": "fc-black-500"}).text.strip()
+    'location': company.find("span", {"class": "fc-black-500"}).text.strip(),
+    'salary': "-"
   }
 
 def load_jobs(last_page):
   jobs = []
-  for page in range(1):
+  for page in range(last_page):
     response = requests.get(f"{URL}&pg={page}", headers = HEADERS)
     soup = BeautifulSoup(response.text , "html.parser")
     vacancies = soup.find("div", {"class": "listResults"}).find_all("div", {"class": "-job"})

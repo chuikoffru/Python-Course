@@ -37,16 +37,16 @@ def parse_job(html):
     compensation = ""
 
   return {
-    'title': title.text,
     'link': title['href'].partition("?")[0],
+    'title': title.text,
     'company': company.strip(),
     'location': location.strip(),
-    'compensation': compensation
+    'salary': compensation
   }
 
 def load_jobs(last_page):
   jobs = []
-  for page in range(1):
+  for page in range(last_page):
     response = requests.get(f"{URL}&page={page}", headers = HEADERS)
     soup = BeautifulSoup(response.text , "html.parser")
     vacancies = soup.find_all("div", {'class': "vacancy-serp-item"})
