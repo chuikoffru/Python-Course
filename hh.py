@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = 'https://hh.ru/search/vacancy?st=searchVacancy&text=React&area=1&schedule=remote&order_by=publication_time&search_period=30&items_on_page=100'
-
 HEADERS = {
     'Host': 'hh.ru',
     'User-Agent': 'Safari',
@@ -11,9 +9,9 @@ HEADERS = {
     'Connection': 'keep-alive'
   }
 
-def get_last_page():
+def get_last_page(url):
 
-  response = requests.get(URL, headers = HEADERS )
+  response = requests.get(url, headers = HEADERS )
 
   soup = BeautifulSoup(response.text , "html.parser")
 
@@ -23,7 +21,10 @@ def get_last_page():
   for page in hh_paginator:
     pages.append(int(page.find('a').text))
 
-  return pages[-1];
+  if len(pages) > 0:
+    return pages[-1]
+  else:
+    return 0
 
 def parse_job(html):
   title = html.find("a");
@@ -44,10 +45,11 @@ def parse_job(html):
     'salary': compensation
   }
 
-def load_jobs(last_page):
+def load_jobs(url, last_page):
   jobs = []
   for page in range(last_page):
-    response = requests.get(f"{URL}&page={page}", headers = HEADERS)
+    print(f"HH parsing {page} page.")
+    response = requests.get(f"{url}&page={page}", headers = HEADERS)
     soup = BeautifulSoup(response.text , "html.parser")
     vacancies = soup.find_all("div", {'class': "vacancy-serp-item"})
     for vacancy in vacancies:
@@ -55,6 +57,7 @@ def load_jobs(last_page):
 
   return jobs
 
-def get_jobs():
-  last_page = get_last_page()
-  return load_jobs(last_page)
+def get_jobs(keyword):
+  url = f"https://hh.ru/search/vacancy?st=searchVacancy&text={keyword}&area=1&schedule=remote&order_by=publication_time&search_period=30&items_on_page=100"
+  last_page = get_last_page(url)
+  return load_jobs(url, last_page)

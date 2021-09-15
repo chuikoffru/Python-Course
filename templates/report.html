@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    section {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30;
+    }
+  </style>
+  <title>Отчет по вакансии</title>
+</head>
+<body>
+  <p>Найдено <b>{{jobs|length}}</b> вакансий по ключевому слову: <b>{{keyword}}</b></p>
+  <p>
+    <a href="/export?keyword={{keyword}}">Скачать CSV</a>
+  </p>
+<section>
+  <h4>Название</h4>
+  <h4>Компания</h4>
+  <h4>Расположение</h4>
+  <h4>Ссылка</h4>
+  {% for job in jobs %}
+  <span>{{job.title}}</span>
+  <span>{{job.company}}</span>
+  <span>{{job.location}}</span>
+  <span><a href="{{job.link}}">Перейти</a></span>
+  {% endfor %}
+</section>
+
+</body>
+</html>
